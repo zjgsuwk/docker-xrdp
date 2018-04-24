@@ -14,6 +14,7 @@ RUN apk add --no-cache \
       xorg-server \
       xrdp \
       xvfb \
+      chromium \
     && \
     apk add --no-cache -X http://dl-4.alpinelinux.org/alpine/edge/testing \
       x11vnc \
@@ -21,11 +22,11 @@ RUN apk add --no-cache \
     && \
     :
 
-RUN adduser -D foo && \
-    echo "setxkbmap dvorak" >> /home/foo/.xinitrc && \
-    echo "exec startxfce4" >> /home/foo/.xinitrc && \
-    chown foo:foo /home/foo/.xinitrc && \
-    echo foo:bar | chpasswd
+RUN adduser -D xrdp && \
+    echo "setxkbmap dvorak" >> /home/xrdp/.xinitrc && \
+    echo "exec startxfce4" >> /home/xrdp/.xinitrc && \
+    chown xrdp:xrdp /home/xrdp/.xinitrc && \
+    echo xrdp:passwd123$ | chpasswd
 
 RUN xrdp-keygen xrdp auto
 
@@ -35,6 +36,9 @@ COPY etc/ /etc/
 # Allow all users to connect via RDP.
 RUN sed -i '/TerminalServerUsers/d' /etc/xrdp/sesman.ini && \
     sed -i '/TerminalServerAdmins/d' /etc/xrdp/sesman.ini
+
+ENV CHROME_BIN=/usr/bin/chromium-browser
+ENV CHROME_PATH=/usr/lib/chromium/
 
 EXPOSE 3389
 CMD ["s6-svscan", "/etc/s6"]
