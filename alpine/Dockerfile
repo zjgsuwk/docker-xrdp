@@ -1,5 +1,12 @@
 FROM alpine:3.6
 
+# Update apk repositories
+RUN echo "http://dl-2.alpinelinux.org/alpine/edge/main" > /etc/apk/repositories \
+    && \
+    echo "http://dl-2.alpinelinux.org/alpine/edge/community" >> /etc/apk/repositories \
+    && \
+    echo "http://dl-2.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories
+
 RUN apk add --no-cache \
       lxdm \
       s6 \
@@ -15,8 +22,6 @@ RUN apk add --no-cache \
       xrdp \
       xvfb \
       chromium \
-    && \
-    apk add --no-cache -X http://dl-4.alpinelinux.org/alpine/edge/testing \
       x11vnc \
       xorgxrdp \
     && \
