@@ -1,0 +1,11 @@
+FROM  jlesage/baseimage-gui:debian-8
+
+RUN apt-get update \
+    && \
+    apt-get install -y chromium chromium-l10n \
+    && \
+    apt-get autoclean
+
+COPY startapp.sh.chrome  /startapp.sh
+
+ENV APP_NAME="Chrome"

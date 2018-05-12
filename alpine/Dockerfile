@@ -1,63 +1,7 @@
-FROM alpine:3.6
+FROM  jlesage/baseimage-gui:alpine-3.7-glibc
 
-# Update apk repositories
-RUN echo "http://dl-2.alpinelinux.org/alpine/edge/main" > /etc/apk/repositories \
-    && \
-    echo "http://dl-2.alpinelinux.org/alpine/edge/community" >> /etc/apk/repositories \
-    && \
-    echo "http://dl-2.alpinelinux.org/alpine/edge/testing" >> /etc/apk/repositories
+RUN add-pkg xterm
 
-RUN apk add --no-cache \
-      lxdm \
-      s6 \
-      setxkbmap \
-      udev \
-      vino \
-      xf86-input-evdev \
-      xf86-input-keyboard \
-      xf86-input-mouse \
-      xfce4 \
-      xinit \
-      xorg-server \
-      xrdp \
-      xvfb \
-      chromium \
-      x11vnc \
-      xorgxrdp \
-    && \
-    :
+COPY startapp.sh /startapp.sh
 
-RUN adduser -D xrdp && \
-    echo "setxkbmap dvorak" >> /home/xrdp/.xinitrc && \
-    echo "exec startxfce4" >> /home/xrdp/.xinitrc && \
-    chown xrdp:xrdp /home/xrdp/.xinitrc && \
-    echo xrdp:passwd123$ | chpasswd
-
-RUN xrdp-keygen xrdp auto
-
-# http://sigkillit.com/2013/02/26/how-to-remotely-access-linux-from-windows/
-COPY etc/ /etc/
-
-# Allow all users to connect via RDP.
-RUN sed -i '/TerminalServerUsers/d' /etc/xrdp/sesman.ini && \
-    sed -i '/TerminalServerAdmins/d' /etc/xrdp/sesman.ini
-
-ENV CHROME_BIN=/usr/bin/chromium-browser
-ENV CHROME_PATH=/usr/lib/chromium/
-
-EXPOSE 3389
-CMD ["s6-svscan", "/etc/s6"]
-
-ARG CI_BUILD_URL
-ARG BUILD_DATE
-ARG VCS_REF
-
-LABEL \
-    io.github.jumanjiman.ci-build-url=${CI_BUILD_URL} \
-    io.github.jumanjiman.build-date=${BUILD_DATE} \
-    io.github.jumanjiman.vcs-ref=${VCS_REF} \
-    io.github.jumanjiman.version="Alpine" \
-    io.github.jumanjiman.license="GPL v3" \
-    io.github.jumanjiman.docker.dockerfile="/alpine/Dockerfile" \
-    io.github.jumanjiman.vcs-type="Git" \
-    io.github.jumanjiman.vcs-url="https://github.com/jumanjiman/docker-xrdp.git"
+ENV APP_NAME="Chrome"

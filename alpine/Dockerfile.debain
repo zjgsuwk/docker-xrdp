@@ -1,0 +1,18 @@
+FROM selenoid/vnc:chrome_66.0
+
+USER root
+
+# RUN apt-get update && apt-get install  sudo
+
+# prepare user alpine
+# RUN addgroup alpine \
+# && adduser  -G alpine -s /bin/sh -D alpine \
+##  && echo "alpine:alpine" | /usr/sbin/chpasswd \
+# && echo "alpine    ALL=(ALL) ALL" >> /etc/sudoers
+# ADD alpine /home/alpine
+# RUN chown -R alpine:alpine /home/alpine
+
+RUN cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
+
+EXPOSE 5900
+
